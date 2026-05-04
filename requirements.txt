@@ -1,2 +1,4 @@
 --index-url https://mirror2.chabokan.net/pypi/simple/
 pyTelegramBotAPI == 4.33.0
+pytube
+gtts

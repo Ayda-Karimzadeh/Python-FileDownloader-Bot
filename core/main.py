@@ -2,6 +2,7 @@ import telebot
 import os
 import logging
 import requests
+from telebot.types import ReplyParameters
 
 logger = telebot.logger
 telebot.logger.setLevel(logging.INFO)
@@ -37,9 +38,20 @@ def download_file_url(message):
     url = message.text
     try:
        file_path = download_file(url)
-       bot.send_document(chat_id=message.chat.id, reply_to_message_id=message.id, document=open(file_path,"rb",), caption="File downloaded successfully, Enjoy!")
+       with open(file_path, "rb") as file:
+        bot.send_document(chat_id=message.chat.id, document=file,
+        caption="File downloaded successfully, Enjoy!", reply_parameters=ReplyParameters(message_id=message.id))
        #logger.info(file_path)
-       os.remove(file_path)
+       
     except:
         bot.reply_to(message, text='problem downloading the requested file')
+
+    try:
+        os.remove(file_path)
+        print("فایل حذف شد.")
+    except FileNotFoundError:
+        print("فایل پیدا نشد.")
+    except PermissionError:
+        print("مجاز نیست فایل را حذف کنید.")
+
 bot.infinity_polling()
